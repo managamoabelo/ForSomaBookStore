@@ -7,15 +7,10 @@ using ForSomaBookStore.Models;
 namespace ForSomaBookStore.Controllers;
 
 [Authorize]
-public class ProfileController : Controller
+public class ProfileController(
+    UserManager<ApplicationUser> userManager) : Controller
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public ProfileController(
-        UserManager<ApplicationUser> userManager)
-    {
-        _userManager = userManager;
-    }
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     public async Task<IActionResult> Index()
     {

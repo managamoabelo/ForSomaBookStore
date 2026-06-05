@@ -6,14 +6,9 @@ using Microsoft.EntityFrameworkCore;
 namespace ForSomaBookStore.Controllers;
 
 [Authorize]
-public class TransactionsController : Controller
+public class TransactionsController(ApplicationDbContext context) : Controller
 {
-    private readonly ApplicationDbContext _context;
-
-    public TransactionsController(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+    private readonly ApplicationDbContext _context = context;
 
     public async Task<IActionResult> Index()
     {

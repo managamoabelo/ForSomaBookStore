@@ -5,14 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace ForSomaBookStore.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class AdminController : Controller
+public class AdminController(ApplicationDbContext context) : Controller
 {
-    private readonly ApplicationDbContext _context;
-
-    public AdminController(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+    private readonly ApplicationDbContext _context = context;
 
     public IActionResult Index()
     {
