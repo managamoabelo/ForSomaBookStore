@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Textbook>
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
+    <div class="container-fluid py-5">
+
+        <h1 class="display-5 fw-bold">
+            Welcome to For Soma Book Store
+        </h1>
+
+        <p class="col-md-8 fs-4">
+            Buy, sell and exchange textbooks with students safely.
+        </p>
+
+        <a asp-controller="Textbooks"
+           asp-action="Index"
+           class="btn btn-primary btn-lg">
+
+            Browse Textbooks
+
+        </a>
+
+    </div>
+</div>
+
+<h2 class="mb-4">Latest Textbooks</h2>
+
+<div class="row">
+
+    @foreach (var book in Model)
+    {
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow-sm">
+
+                <img src="@book.ImageUrl"
+                     class="card-img-top"
+                     style="height:250px;object-fit:cover;" />
+
+                <div class="card-body">
+
+                    <h5>@book.Title</h5>
+
+                    <p>@book.Author</p>
+
+                    <p class="fw-bold text-success">
+                        R @book.Price
+                    </p>
+
+                    <a asp-controller="Textbooks"
+                       asp-action="Details"
+                       asp-route-id="@book.Id"
+                       class="btn btn-primary">
+
+                        View Details
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+</div>
