@@ -23,10 +23,12 @@ namespace ForSomaBookStore.Models
             Rejected
         }
 
+        [Display(Name = "Textbook ID")]
         public int TextbookId { get; set; }
 
         public Textbook? Textbook { get; set; }
 
+        [Display(Name = "Buyer ID")]
         public string? BuyerId { get; set; }
 
         public ApplicationUser? Buyer { get; set; }

@@ -7,6 +7,7 @@ public class Transaction
 {
     public int Id { get; set; }
 
+    [Display(Name = "Offer ID")]
     public int OfferId { get; set; }
 
     public Offer? Offer { get; set; }

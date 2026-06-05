@@ -15,6 +15,7 @@ namespace ForSomaBookStore.Models
         public DateTime DatePosted { get; set; }
             = DateTime.UtcNow;
 
+        [Display(Name = "User ID")]
         public string? UserId { get; set; }
 
         public ApplicationUser? User { get; set; }

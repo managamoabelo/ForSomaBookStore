@@ -30,12 +30,14 @@ public class Textbook
     [Display(Name = "Image URL")]
     public string? ImageUrl { get; set; }
 
+    [Display(Name = "Availability")]
     public bool IsAvailable { get; set; } = true;
 
     [Display(Name = "Date Created")]
     public DateTime DateCreated { get; set; }
         = DateTime.UtcNow;
 
+    [Display(Name = "User ID")]
     public string? UserId { get; set; }
 
     public required ApplicationUser User { get; set; }

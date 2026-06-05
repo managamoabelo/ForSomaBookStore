@@ -13,10 +13,13 @@ namespace ForSomaBookStore.Models
         [StringLength(500)]
         public string? Comment { get; set; }
 
+        [Display(Name = "Reviewer ID")]
         public string? ReviewerId { get; set; }
 
+        [Display(Name = "Reviewee ID")]
         public string? RevieweeId { get; set; }
 
+        [Display(Name = "Transaction ID")]
         public int TransactionId { get; set; }
 
         public Transaction? Transaction { get; set; }

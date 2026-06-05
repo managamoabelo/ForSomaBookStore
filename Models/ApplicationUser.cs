@@ -18,11 +18,16 @@ public class ApplicationUser : IdentityUser
 
     public string? Campus { get; set; }
 
+    [Display(Name = "Student Number")]
+    public string? StudentNumber { get; set; }
+
     [Display(Name = "Trust Score")]
     public decimal TrustScore { get; set; }
 
     [Display(Name = "Preferred Language")]
     public string? PreferredLanguage { get; set; } = "English";
+    
+    public string? Bio { get; set; }
 
     public ICollection<Textbook> Textbooks { get; set; }
     = [];
