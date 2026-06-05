@@ -28,13 +28,13 @@ using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    string[] roles = ["Admin", "Student"];
+    string[] roles = new[] { "Admin", "Student" };
 
     foreach (var role in roles)
     {
-        if (!await roleManager.RoleExistsAsync(role))
+        if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
         {
-            await roleManager.CreateAsync(new IdentityRole(role));
+            roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
         }
     }
 }
