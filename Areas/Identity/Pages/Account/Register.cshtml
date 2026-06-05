@@ -24,16 +24,127 @@
             </div>
 
             <div class="form-floating mb-3">
-                <select asp-for="Input.Campus" class="form-select">
-                    <option value="">Select Campus</option>
-                    <option>Soweto</option>
-                    <option>Doornfontein</option>
-                    <option>Auckland Park Kingsway</option>
-                    <option>Auckland Park Bunting Road</option>
+                <select asp-for="Input.Campus"C:\2nd Year\WEBB262\ForSomaBookStore"" class="form-select">
+                    <option value="">Select Institution</option>
+                    <!-- Expanded list -->
+                    <!-- More list -->
+                    <!-- Public Universities -->
+                    <option>University of Cape Town</option>
+                    <option>University of Pretoria</option>
+                    <option>University of the Witwatersrand</option>
+                    <option>Stellenbosch University</option>
+                    <option>University of Johannesburg</option>
+                    <option>University of KwaZulu-Natal</option>
+                    <option>University of the Western Cape</option>
+                    <option>University of the Free State</option>
+                    <option>University of Limpopo</option>
+                    <option>University of Venda</option>
+                    <option>University of Fort Hare</option>
+                    <option>Rhodes University</option>
+                    <option>Nelson Mandela University</option>
+                    <option>Walter Sisulu University</option>
+                    <option>University of Mpumalanga</option>
+                    <option>Sol Plaatje University</option>
+                    <option>North-West University</option>
+                    <option>Sefako Makgatho Health Sciences University</option>
+                    <option>University of South Africa (UNISA)</option>
+
+                    <!-- Universities of Technology -->
+                    <option>Cape Peninsula University of Technology</option>
+                    <option>Durban University of Technology</option>
+                    <option>Tshwane University of Technology</option>
+                    <option>Central University of Technology</option>
+                    <option>Mangosuthu University of Technology</option>
+                    <option>Vaal University of Technology</option>
+
+                    <!-- Private Institutions -->
+                    <option>Boston City Campus</option>
+                    <option>Damelin</option>
+                    <option>Pearson Institute of Higher Education</option>
+                    <option>Milpark Education</option>
+                    <option>Richfield Graduate Institute of Technology</option>
+                    <option>CTI Education Group</option>
+                    <option>MANCOSA</option>
+                    <option>IMM Graduate School</option>
+                    <option>Regenesys Business School</option>
+                    <option>STADIO</option>
+                    <option>EDUVOS</option>
+                    <option>Varsity College Emeris</option>
+                    <option>Vega School Emeris</option>
+
+                    <!-- TVET Colleges -->
+                    <!-- Gauteng -->
+                    <option>Central Johannesburg TVET College</option>
+                    <option>Ekurhuleni East TVET College</option>
+                    <option>Ekurhuleni West TVET College</option>
+                    <option>Sedibeng TVET College</option>
+                    <option>South West Gauteng TVET College</option>
+                    <option>Tshwane North TVET College</option>
+                    <option>Tshwane South TVET College</option>
+                    <option>Western TVET College (Westcol)</option>
+
+                    <!-- Western Cape -->
+                    <option>Boland TVET College</option>
+                    <option>College of Cape Town</option>
+                    <option>False Bay TVET College</option>
+                    <option>Northlink TVET College</option>
+                    <option>South Cape TVET College</option>
+                    <option>West Coast TVET College</option>
+
+                    <!-- KwaZulu-Natal -->
+                    <option>Coastal KZN TVET College</option>
+                    <option>Elangeni TVET College</option>
+                    <option>Esayidi TVET College</option>
+                    <option>Majuba TVET College</option>
+                    <option>Mnambithi TVET College</option>
+                    <option>Mthashana TVET College</option>
+                    <option>Thekwini TVET College</option>
+                    <option>Umfolozi TVET College</option>
+                    <option>Umgungundlovu TVET College</option>
+
+                    <!-- Eastern Cape -->
+                    <option>Buffalo City TVET College</option>
+                    <option>Eastcape Midlands TVET College</option>
+                    <option>Ikhala TVET College</option>
+                    <option>Ingwe TVET College</option>
+                    <option>King Hintsa TVET College</option>
+                    <option>King Sabata Dalindyebo TVET College</option>
+                    <option>Lovedale TVET College</option>
+                    <option>Port Elizabeth TVET College</option>
+
+                    <!-- Limpopo -->
+                    <option>Capricorn TVET College</option>
+                    <option>Lephalale TVET College</option>
+                    <option>Letaba TVET College</option>
+                    <option>Mopani South East TVET College</option>
+                    <option>Sekhukhune TVET College</option>
+                    <option>Vhembe TVET College</option>
+                    <option>Waterberg TVET College</option>
+
+                    <!-- Free State -->
+                    <option>Flavius Mareka TVET College</option>
+                    <option>Goldfields TVET College</option>
+                    <option>Motheo TVET College</option>
+                    <option>Maluti TVET College</option>
+
+                    <!-- Mpumalanga -->
+                    <option>Ehlanzeni TVET College</option>
+                    <option>Nkangala TVET College</option>
+                    <option>Gert Sibande TVET College</option>
+
+                    <!-- North West -->
+                    <option>Orbit TVET College</option>
+                    <option>Taletso TVET College</option>
+                    <option>Vuselela TVET College</option>
+
+                    <!-- Northern Cape -->
+                    <option>Northern Cape Rural TVET College</option>
+                    <option>Northern Cape Urban TVET College</option>
                 </select>
                 <label asp-for="Input.Campus"></label>
                 <span asp-validation-for="Input.Campus" class="text-danger"></span>
             </div>
+
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />

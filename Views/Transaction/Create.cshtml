@@ -1,0 +1,66 @@
+@model ForSomaBookStore.Models.Transaction
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Transaction</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="OfferId" class="control-label"></label>
+                <input asp-for="OfferId" class="form-control" />
+                <span asp-validation-for="OfferId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Offer" class="control-label"></label>
+                <input asp-for="Offer" class="form-control" />
+                <span asp-validation-for="Offer" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MeetupLocation" class="control-label"></label>
+                <input asp-for="MeetupLocation" class="form-control" />
+                <span asp-validation-for="MeetupLocation" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PaymentMethod" class="control-label"></label>
+                <input asp-for="PaymentMethod" class="form-control" />
+                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TransactionDate" class="control-label"></label>
+                <input asp-for="TransactionDate" class="form-control" />
+                <span asp-validation-for="TransactionDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Completed" class="control-label"></label>
+                <input asp-for="Completed" class="form-check-input" />
+                <span asp-validation-for="Completed" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

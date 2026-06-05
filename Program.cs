@@ -33,9 +33,9 @@ using (var scope = app.Services.CreateScope())
 
     foreach (var role in roles)
     {
-        if (!await roleManager.RoleExistsAsync(role))
+        if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
         {
-            await roleManager.CreateAsync(new IdentityRole(role));
+            roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
         }
     }
 }
