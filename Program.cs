@@ -23,7 +23,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 var app = builder.Build();
-
+// something
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
