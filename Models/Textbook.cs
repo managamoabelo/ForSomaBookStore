@@ -40,7 +40,7 @@ public class Textbook
     [Display(Name = "User ID")]
     public string? UserId { get; set; }
 
-    public required ApplicationUser User { get; set; }
+    public ApplicationUser? User { get; set; }
 
-    public required ICollection<Offer> Offers { get; set; }
+    public ICollection<Offer>? Offers { get; set; }
 }

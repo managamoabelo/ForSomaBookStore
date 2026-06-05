@@ -18,10 +18,7 @@ namespace ForSomaBookStore.Models
         public string? Bio { get; set; }
 
         public IEnumerable<Textbook>? Textbooks { get; set; }
-
-        [Display(Name = "Wanted Ads")]
         public IEnumerable<WantedAd>? WantedAds { get; set; }
-
         public IEnumerable<Transaction>? Transactions { get; set; }
     }
 }

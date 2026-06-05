@@ -1,35 +1,39 @@
+using ForSomaBookStore.Data;
 using ForSomaBookStore.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using ForSomaBookStore.Services.Interfaces;
 using ForSomaBookStore.Services.Implementations;
-using ForSomaBookStore.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<ITextbookService, TextbookService>();
-
 builder.Services.AddControllersWithViews();
 
+// DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = false;
-})
-.AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<ApplicationDbContext>();
+// Identity (FIXED - IMPORTANT)
+builder.Services
+    .AddDefaultIdentity<ApplicationUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+    })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Services
+builder.Services.AddScoped<ITextbookService, TextbookService>();
 
 var app = builder.Build();
-// something
-// change 2
+
+// Role seeding
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    string[] roles = ["Admin", "Student"];
+    string[] roles = { "Admin", "Student" };
 
     foreach (var role in roles)
     {
