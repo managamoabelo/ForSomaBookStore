@@ -24,6 +24,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 
 var app = builder.Build();
 // something
+// change 2
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
