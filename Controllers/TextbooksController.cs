@@ -2,6 +2,7 @@
 using ForSomaBookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ForSomaBookStore.Controllers;
 
@@ -21,10 +22,15 @@ public class TextbooksController(ITextbookService service) : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Textbook textbook)
     {
         if (ModelState.IsValid)
         {
+            // 🔥 FIX: attach logged-in user ID
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            textbook.UserId = userId;
+
             await _service.CreateAsync(textbook);
             return RedirectToAction(nameof(Index));
         }
@@ -36,17 +42,19 @@ public class TextbooksController(ITextbookService service) : Controller
     {
         var textbook = await _service.GetByIdAsync(id);
 
-        if (textbook == null)
-            return NotFound();
-
         return View(textbook);
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Textbook textbook)
     {
         if (!ModelState.IsValid)
             return View(textbook);
+
+        // optional safety (recommended)
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        textbook.UserId = userId;
 
         await _service.UpdateAsync(textbook);
 
