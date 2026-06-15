@@ -34,7 +34,7 @@ namespace ForSomaBookStore.Migrations
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Campus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StudentNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TrustScore = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TrustScore = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     PreferredLanguage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -54,6 +54,24 @@ namespace ForSomaBookStore.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContactMessages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    DateSubmitted = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Resolved = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactMessages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -163,6 +181,29 @@ namespace ForSomaBookStore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Link = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Textbooks",
                 columns: table => new
                 {
@@ -174,12 +215,15 @@ namespace ForSomaBookStore.Migrations
                     CourseCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Edition = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Condition = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Campus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Reported = table.Column<bool>(type: "bit", nullable: false),
+                    ReportReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReportReviewed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -188,7 +232,8 @@ namespace ForSomaBookStore.Migrations
                         name: "FK_Textbooks_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -218,20 +263,27 @@ namespace ForSomaBookStore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OfferAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    OfferAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     OfferDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     TextbookId = table.Column<int>(type: "int", nullable: false),
-                    BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Offers", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Offers_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Offers_AspNetUsers_BuyerId",
                         column: x => x.BuyerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Offers_Textbooks_TextbookId",
                         column: x => x.TextbookId,
@@ -251,7 +303,10 @@ namespace ForSomaBookStore.Migrations
                     MeetupLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Completed = table.Column<bool>(type: "bit", nullable: false)
+                    Completed = table.Column<bool>(type: "bit", nullable: false),
+                    Paid = table.Column<bool>(type: "bit", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PaymentReference = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -272,13 +327,25 @@ namespace ForSomaBookStore.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    ReviewerId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RevieweeId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReviewerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RevieweeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TransactionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_AspNetUsers_RevieweeId",
+                        column: x => x.RevieweeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reviews_AspNetUsers_ReviewerId",
+                        column: x => x.ReviewerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reviews_Transactions_TransactionId",
                         column: x => x.TransactionId,
@@ -327,6 +394,16 @@ namespace ForSomaBookStore.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Offers_ApplicationUserId",
+                table: "Offers",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Offers_BuyerId",
                 table: "Offers",
                 column: "BuyerId");
@@ -335,6 +412,16 @@ namespace ForSomaBookStore.Migrations
                 name: "IX_Offers_TextbookId",
                 table: "Offers",
                 column: "TextbookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_RevieweeId",
+                table: "Reviews",
+                column: "RevieweeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_ReviewerId",
+                table: "Reviews",
+                column: "ReviewerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_TransactionId",
@@ -384,6 +471,12 @@ namespace ForSomaBookStore.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "ContactMessages");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

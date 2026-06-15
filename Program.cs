@@ -32,13 +32,20 @@ var app = builder.Build();
 // Role seeding
 using (var scope = app.Services.CreateScope())
 {
-    var userManager = scope.ServiceProvider
-        .GetRequiredService<UserManager<ApplicationUser>>();
+    var services = scope.ServiceProvider;
+
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    if (!await roleManager.RoleExistsAsync("Admin"))
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+    if (!await roleManager.RoleExistsAsync("Student"))
+        await roleManager.CreateAsync(new IdentityRole("Student"));
 
     var admin = await userManager.FindByEmailAsync("managamoabelo2@gmail.com");
 
-    if (admin != null &&
-        !await userManager.IsInRoleAsync(admin, "Admin"))
+    if (admin != null && !await userManager.IsInRoleAsync(admin, "Admin"))
     {
         await userManager.AddToRoleAsync(admin, "Admin");
     }
