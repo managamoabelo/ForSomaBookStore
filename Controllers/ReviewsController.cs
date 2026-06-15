@@ -25,7 +25,10 @@ public class ReviewsController : Controller
     public async Task<IActionResult> Index()
     {
         var reviews = await _context.Reviews
+            .Include(r => r.Reviewer)
+            .Include(r => r.Reviewee)
             .Include(r => r.Transaction)
+            .OrderByDescending(r => r.Id)
             .ToListAsync();
 
         return View(reviews);
@@ -40,6 +43,14 @@ public class ReviewsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Review review)
     {
+        // A review must belong to a real transaction, otherwise the database
+        // rejects it (TransactionId is a required foreign key).
+        var transactionExists = review.TransactionId > 0
+            && await _context.Transactions.AnyAsync(t => t.Id == review.TransactionId);
+
+        if (!transactionExists)
+            ModelState.AddModelError(string.Empty, "A valid transaction is required to leave a review.");
+
         if (!ModelState.IsValid)
             return View(review);
 

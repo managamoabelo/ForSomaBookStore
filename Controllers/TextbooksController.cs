@@ -68,6 +68,9 @@ public class TextbooksController(ITextbookService service, ApplicationDbContext 
     {
         var textbook = await _service.GetByIdAsync(id);
 
+        if (!CanManage(textbook))
+            return Forbid();
+
         return View(textbook);
     }
 
@@ -75,18 +78,25 @@ public class TextbooksController(ITextbookService service, ApplicationDbContext 
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Textbook textbook)
     {
+        var existing = await _context.Textbooks
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Id == textbook.Id);
+
+        if (existing == null)
+            return NotFound();
+
+        if (!CanManage(existing))
+            return Forbid();
+
         if (!ModelState.IsValid)
             return View(textbook);
 
-        // optional safety
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Challenge();
-        }
-
-        textbook.UserId = userId;
+        // Keep the original owner and fields that aren't part of the edit form
+        textbook.UserId = existing.UserId;
+        textbook.DateCreated = existing.DateCreated;
+        textbook.Reported = existing.Reported;
+        textbook.ReportReason = existing.ReportReason;
+        textbook.ReportReviewed = existing.ReportReviewed;
 
         await _service.UpdateAsync(textbook);
 
@@ -95,9 +105,39 @@ public class TextbooksController(ITextbookService service, ApplicationDbContext 
 
     public async Task<IActionResult> Delete(int id)
     {
+        var textbook = await _service.GetByIdAsync(id);
+
+        if (!CanManage(textbook))
+            return Forbid();
+
+        return View(textbook);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var textbook = await _context.Textbooks
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (textbook == null)
+            return NotFound();
+
+        if (!CanManage(textbook))
+            return Forbid();
+
         await _service.DeleteAsync(id);
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // A listing can only be changed by the student who posted it or an admin.
+    private bool CanManage(Textbook textbook)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        return textbook.UserId == userId || User.IsInRole("Admin");
     }
 
     public async Task<IActionResult> Details(int id)

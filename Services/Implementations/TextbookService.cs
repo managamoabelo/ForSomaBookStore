@@ -18,7 +18,10 @@ public class TextbookService(ApplicationDbContext context) : ITextbookService
 
     public async Task<Textbook> GetByIdAsync(int id)
     {
-        var book = await _context.Textbooks.FindAsync(id);
+        var book = await _context.Textbooks
+            .Include(t => t.User)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
         return book is null ? throw new KeyNotFoundException($"Textbook with id {id} not found.") : book;
     }
 

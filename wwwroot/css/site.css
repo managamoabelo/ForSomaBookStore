@@ -1,7 +1,3 @@
-/*body {
-    background: red !important;
-}*/
-
 html {
   font-size: 14px;
 }
@@ -77,4 +73,35 @@ main {
 
 .footer a:hover {
     text-decoration: underline;
+}
+
+/* Book listing cards */
+.card-img-top.book-cover,
+.book-cover {
+    height: 220px;
+    object-fit: cover;
+}
+
+.book-cover-placeholder {
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e2e8f0;
+    color: #94a3b8;
+    font-size: 3rem;
+}
+
+.card {
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.card.h-100:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Keep inline action buttons spaced inside cards and tables */
+.card-body .btn {
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
 }

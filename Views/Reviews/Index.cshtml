@@ -1,35 +1,47 @@
 @model IEnumerable<ForSomaBookStore.Models.Review>
 
-<h2>Reviews</h2>
+@{
+    ViewData["Title"] = "Reviews";
+}
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">
-        Leave Review
-    </a>
+<h1>Reviews</h1>
+<p class="text-muted">
+    Reviews are left after a transaction is completed. You can leave one from your
+    <a asp-controller="Transactions" asp-action="Index">transactions</a>.
 </p>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Rating</th>
-            <th>Comment</th>
-            <th>Transaction</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach(var item in Model)
-        {
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No reviews have been left yet.
+    </div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
             <tr>
-                @for (int i = 0; i < item.Rating; i++)
-                {
-                    <i class="fa-solid fa-star text-warning"></i>
-                }
-                <td>@item.Comment</td>
-                <td>@item.TransactionId</td>
-                <td>@item.ReviewerId</td>
-                <td>@item.RevieweeId</td>
+                <th>Rating</th>
+                <th>Reviewer</th>
+                <th>Seller</th>
+                <th>Comment</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @for (int i = 0; i < item.Rating; i++)
+                        {
+                            <i class="fa-solid fa-star text-warning"></i>
+                        }
+                    </td>
+                    <td>@item.Reviewer?.FirstName @item.Reviewer?.LastName</td>
+                    <td>@item.Reviewee?.FirstName @item.Reviewee?.LastName</td>
+                    <td>@item.Comment</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

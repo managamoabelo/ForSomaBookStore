@@ -1,107 +1,98 @@
 @model IEnumerable<ForSomaBookStore.Models.Textbook>
+@using System.Security.Claims
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Browse Books";
+
+    var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var isAdmin = User.IsInRole("Admin");
 }
 
-<h1>Browse Books</h1>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ISBN)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CourseCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Edition)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Condition)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Campus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsAvailable)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.ISBN)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.CourseCode)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Edition)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Condition)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Campus)
-            </td>
-            <td>
-                <img src="@item.ImageUrl"
-                     class="img-fluid"
-                     style="height:200px;width:150px;object-fit:cover;" />
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.IsAvailable)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.UserId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-                <a asp-controller="Offers" asp-action="Create" asp-route-textbookId="@item.Id" class="btn btn-success btn-sm"> Make Offer</a> |
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Browse Books</h1>
+    <a asp-action="Create" class="btn btn-forsoma">
+        <i class="fa-solid fa-plus"></i> List a Textbook
+    </a>
+</div>
 
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                <a asp-controller="Offers" asp-action="Create" asp-route-textbookId="@item.Id" class="btn btn-success btn-sm"> Make Offer</a> |
-                
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                <a asp-controller="Offers" asp-action="Create" asp-route-textbookId="@item.Id" class="btn btn-success btn-sm"> Make Offer</a> |
-            </td>
-        </tr>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No textbooks found. Be the first to list one!
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            var isOwner = item.UserId == currentUserId;
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" class="card-img-top book-cover" alt="@item.Title" />
+                    }
+                    else
+                    {
+                        <div class="book-cover-placeholder">
+                            <i class="fa-solid fa-book"></i>
+                        </div>
+                    }
+
+                    <div class="card-body d-flex flex-column">
+
+                        <h5 class="card-title mb-1">@item.Title</h5>
+                        <p class="text-muted mb-2">@item.Author</p>
+
+                        <p class="fw-bold text-success mb-2">R @item.Price.ToString("N2")</p>
+
+                        <p class="small text-muted mb-2">
+                            @if (!string.IsNullOrEmpty(item.Condition))
+                            {
+                                <span>@item.Condition</span>
+                            }
+                            @if (!string.IsNullOrEmpty(item.Campus))
+                            {
+                                <span> &middot; @item.Campus</span>
+                            }
+                        </p>
+
+                        @if (item.IsAvailable)
+                        {
+                            <span class="badge bg-success align-self-start mb-2">Available</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger align-self-start mb-2">Sold</span>
+                        }
+
+                        <div class="mt-auto">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                View Details
+                            </a>
+
+                            @if (!isOwner && item.IsAvailable)
+                            {
+                                <a asp-controller="Offers" asp-action="Create" asp-route-textbookId="@item.Id"
+                                   class="btn btn-sm btn-success">
+                                    Make Offer
+                                </a>
+                            }
+
+                            @if (isOwner || isAdmin)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
+                                    Edit
+                                </a>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

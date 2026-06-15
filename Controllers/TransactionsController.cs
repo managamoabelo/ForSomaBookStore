@@ -55,7 +55,8 @@ public class TransactionsController(ApplicationDbContext context) : Controller
 
         _context.Transactions.Add(transaction);
 
-        offer.Textbook?.IsAvailable = false;
+        if (offer.Textbook != null)
+            offer.Textbook.IsAvailable = false;
 
         await _context.SaveChangesAsync();
 

@@ -1,134 +1,144 @@
 @model ForSomaBookStore.Models.Textbook
+@using System.Security.Claims
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Title;
+
+    var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var isOwner = Model.UserId == currentUserId;
+    var isAdmin = User.IsInRole("Admin");
 }
 
-<h1>Details</h1>
+<div class="row">
 
-<div>
-    <h4>Textbook</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Author)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ISBN)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ISBN)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CourseCode)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CourseCode)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Edition)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Edition)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Condition)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Condition)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Campus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Campus)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsAvailable)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsAvailable)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateCreated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateCreated)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Offers)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Offers)
-        </dd>
-    </dl>
-
-    <h5>Seller Information</h5>
-
-    <p>@Model.User?.FirstName @Model.User?.LastName</p>
-    <p>@Model.User?.Campus</p>
-    <p>Trust Score: @Model.User?.TrustScore</p>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Report" asp-route-id="@Model?.Id" class="btn btn-warning"> Report Listing </a>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-<hr />
-
-<h5>Report Listing</h5>
-
-<form asp-action="Report" method="post">
-
-    <input type="hidden"
-           name="id"
-           value="@Model?.Id" />
-
-    <div class="mb-3">
-        <textarea name="reason"
-                  class="form-control"
-                  placeholder="Why are you reporting this listing?"
-                  required>
-        </textarea>
+    <div class="col-md-4 mb-3">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl"
+                 class="img-fluid rounded shadow-sm book-cover"
+                 alt="@Model.Title" />
+        }
+        else
+        {
+            <div class="book-cover-placeholder rounded shadow-sm">
+                <i class="fa-solid fa-book"></i>
+            </div>
+        }
     </div>
 
-    <button type="submit"
-            class="btn btn-danger">
-        Report Listing
-    </button>
+    <div class="col-md-8">
 
-</form>
+        <h2 class="mb-1">@Model.Title</h2>
+        <p class="text-muted">by @Model.Author</p>
+
+        <h3 class="text-success fw-bold mb-3">R @Model.Price.ToString("N2")</h3>
+
+        @if (Model.IsAvailable)
+        {
+            <span class="badge bg-success mb-3">Available</span>
+        }
+        else
+        {
+            <span class="badge bg-danger mb-3">Sold</span>
+        }
+
+        <dl class="row mb-3">
+            <dt class="col-sm-3">ISBN</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.ISBN) ? "-" : Model.ISBN)</dd>
+
+            <dt class="col-sm-3">Course Code</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.CourseCode) ? "-" : Model.CourseCode)</dd>
+
+            <dt class="col-sm-3">Edition</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Edition) ? "-" : Model.Edition)</dd>
+
+            <dt class="col-sm-3">Condition</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Condition) ? "-" : Model.Condition)</dd>
+
+            <dt class="col-sm-3">Campus</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Campus) ? "-" : Model.Campus)</dd>
+
+            <dt class="col-sm-3">Listed</dt>
+            <dd class="col-sm-9">@Model.DateCreated.ToString("dd MMM yyyy")</dd>
+        </dl>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Seller</h5>
+                <p class="mb-1">@Model.User?.FirstName @Model.User?.LastName</p>
+                <p class="mb-1 text-muted">@Model.User?.Campus</p>
+                <p class="mb-0">
+                    Trust Score:
+                    <span class="badge bg-success">@Model.User?.TrustScore</span>
+                </p>
+            </div>
+        </div>
+
+        @* Make an offer - only for other students, on available books *@
+        @if (!isOwner && Model.IsAvailable)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Make an Offer</h5>
+
+                    <form asp-controller="Offers" asp-action="Create" method="post" class="row g-2 align-items-end">
+                        <input type="hidden" name="TextbookId" value="@Model.Id" />
+
+                        <div class="col-sm-6">
+                            <label class="form-label">Your offer (R)</label>
+                            <input type="number" name="OfferAmount"
+                                   class="form-control"
+                                   step="0.01" min="1" required />
+                        </div>
+
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-success w-100">
+                                Send Offer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+
+        <div class="mb-3">
+            @if (isOwner || isAdmin)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                    <i class="fa-solid fa-pen"></i> Edit
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </a>
+            }
+
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+
+        @* Reporting a listing is only useful for other students *@
+        @if (!isOwner)
+        {
+            <p>
+                <a class="text-muted small" data-bs-toggle="collapse" href="#reportBox">
+                    <i class="fa-solid fa-flag"></i> Report this listing
+                </a>
+            </p>
+
+            <div class="collapse" id="reportBox">
+                <form asp-action="Report" method="post" class="card card-body">
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="mb-2">
+                        <textarea name="reason" class="form-control" rows="3"
+                                  placeholder="Why are you reporting this listing?" required></textarea>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-sm btn-danger">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        }
+
+    </div>
+</div>

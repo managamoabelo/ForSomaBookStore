@@ -1,21 +1,37 @@
 @model ForSomaBookStore.Models.Offer
 
-<h2>Make Offer</h2>
+@{
+    ViewData["Title"] = "Make an Offer";
+}
 
-<form asp-action="Create">
+<h2>Make an Offer</h2>
 
-    <input type="hidden"
-           asp-for="TextbookId"
-           value="@ViewBag.TextbookId" />
+@if (ViewBag.TextbookTitle != null)
+{
+    <p class="text-muted">For: <strong>@ViewBag.TextbookTitle</strong></p>
+}
 
-    <div class="mb-3">
-        <label asp-for="OfferAmount"></label>
-        <input asp-for="OfferAmount"
-               class="form-control" />
-        <span asp-validation-for="OfferAmount"
-              class="text-danger"></span>
+<div class="row">
+    <div class="col-md-5">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="TextbookId" />
+
+            <div class="mb-3">
+                <label asp-for="OfferAmount" class="form-label">Your offer (R)</label>
+                <input asp-for="OfferAmount" class="form-control" type="number" step="0.01" min="1" />
+                <span asp-validation-for="OfferAmount" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success">Send Offer</button>
+            <a asp-controller="Textbooks" asp-action="Details" asp-route-id="@Model.TextbookId" class="btn btn-secondary">
+                Cancel
+            </a>
+        </form>
     </div>
+</div>
 
-    <button type="submit" class="btn btn-success"> Submit Offer </button>
-
-</form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
