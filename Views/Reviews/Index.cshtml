@@ -1,65 +1,35 @@
 @model IEnumerable<ForSomaBookStore.Models.Review>
 
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Reviews</h1>
+<h2>Reviews</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">
+        Leave Review
+    </a>
 </p>
-<table class="table">
+
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comment)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReviewerId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RevieweeId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TransactionId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transaction)
-            </th>
-            <th></th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Transaction</th>
         </tr>
     </thead>
+
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Comment)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.ReviewerId)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.RevieweeId)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.TransactionId)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Transaction)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach(var item in Model)
+        {
+            <tr>
+                @for (int i = 0; i < item.Rating; i++)
+                {
+                    <i class="fa-solid fa-star text-warning"></i>
+                }
+                <td>@item.Comment</td>
+                <td>@item.TransactionId</td>
+                <td>@item.ReviewerId</td>
+                <td>@item.RevieweeId</td>
+            </tr>
+        }
     </tbody>
 </table>

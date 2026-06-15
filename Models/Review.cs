@@ -16,8 +16,12 @@ namespace ForSomaBookStore.Models
         [Display(Name = "Reviewer ID")]
         public string? ReviewerId { get; set; }
 
+        public ApplicationUser? Reviewer { get; set; }
+
         [Display(Name = "Reviewee ID")]
         public string? RevieweeId { get; set; }
+
+        public ApplicationUser? Reviewee { get; set; }
 
         [Display(Name = "Transaction ID")]
         public int TransactionId { get; set; }

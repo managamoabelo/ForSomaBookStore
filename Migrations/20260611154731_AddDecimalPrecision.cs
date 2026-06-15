@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace ForSomaBookStore.Models.Migrations
+namespace ForSomaBookStore.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTextbookFields : Migration
+    public partial class AddDecimalPrecision : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

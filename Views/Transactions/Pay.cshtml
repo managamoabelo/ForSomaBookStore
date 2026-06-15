@@ -1,0 +1,57 @@
+﻿@model ForSomaBookStore.Models.Transaction
+
+@{
+    ViewData["Title"] = "Payment Gateway";
+}
+
+<h2>Secure Payment Gateway</h2>
+
+<div class="card shadow p-4">
+
+    <h4>
+        Transaction #@Model.Id
+    </h4>
+
+    <hr />
+
+    <p>
+        <strong>Book:</strong>
+        @Model.Offer?.Textbook?.Title
+    </p>
+
+    <p>
+        <strong>Amount:</strong>
+        R @Model.Offer?.OfferAmount.ToString("N2")
+    </p>
+
+    <form asp-action="PayConfirmed"
+          asp-route-id="@Model.Id"
+          method="post">
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Payment Method
+            </label>
+
+            <select class="form-select">
+
+                <option>Credit Card</option>
+
+                <option>Debit Card</option>
+
+                <option>Instant EFT</option>
+
+                <option>PayFast</option>
+
+            </select>
+
+        </div>
+
+        <button class="btn btn-success">
+            Pay Now
+        </button>
+
+    </form>
+
+</div>

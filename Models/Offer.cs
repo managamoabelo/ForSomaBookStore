@@ -7,6 +7,7 @@ namespace ForSomaBookStore.Models
     {
         public int Id { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
         [Display(Name = "Offer Amount")]
         public decimal OfferAmount { get; set; }
 
@@ -29,7 +30,7 @@ namespace ForSomaBookStore.Models
         public Textbook? Textbook { get; set; }
 
         [Display(Name = "Buyer ID")]
-        public string? BuyerId { get; set; }
+        public string BuyerId { get; set; } = string.Empty;
 
         public ApplicationUser? Buyer { get; set; }
     }

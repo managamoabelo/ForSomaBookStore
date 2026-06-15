@@ -38,9 +38,17 @@ public class Textbook
         = DateTime.UtcNow;
 
     [Display(Name = "User ID")]
-    public string? UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
 
     public ApplicationUser? User { get; set; }
+
+    public bool Reported { get; set; } = false;
+
+    [Display(Name = "Report Reason")]
+    public string? ReportReason { get; set; }
+
+    [Display(Name = "Report Reviewed")]
+    public bool ReportReviewed { get; set; }
 
     public ICollection<Offer>? Offers { get; set; }
 }

@@ -1,71 +1,89 @@
 @model IEnumerable<ForSomaBookStore.Models.Transaction>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<h2>Transactions</h2>
 
-<h1>Transactions</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.OfferId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Offer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MeetupLocation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentMethod)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TransactionDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Completed)
-            </th>
-            <th></th>
+            <th>Textbook</th>
+            <th>Offer Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Meetup Location</th>
+            <th>Actions</th>
+            <th>Review</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.OfferId)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Offer)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.MeetupLocation)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.PaymentMethod)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.TransactionDate)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Completed)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Offer?.Textbook?.Title</td>
+
+                <td>
+                    R @item.Offer?.OfferAmount.ToString("N2")
+                </td>
+
+                <td>
+                    @if (item.Status == Transaction.TransactionStatus.Completed)
+                    {
+                        <span class="badge bg-success">Completed</span>
+                    }
+                    else if (item.Status == Transaction.TransactionStatus.Cancelled)
+                    {
+                        <span class="badge bg-danger">Cancelled</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    }
+                </td>
+
+                <td>@item.TransactionDate.ToShortDateString()</td>
+
+                <td>@item.MeetupLocation</td>
+
+                <td>
+
+                    @if (!item.Paid)
+                    {
+                        <a asp-action="Pay"
+                           asp-route-id="@item.Id"
+                           class="btn btn-primary btn-sm">
+                            Pay
+                        </a>
+                    }
+                    else if (!item.Completed)
+                    {
+                        <a asp-action="Complete"
+                           asp-route-id="@item.Id"
+                           class="btn btn-success btn-sm">
+                            Complete
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">
+                            Completed
+                        </span>
+                    }
+
+                </td>
+
+                <td>
+                    @if (item.Completed)
+                    {
+                        <a asp-controller="Reviews"
+                           asp-action="LeaveReview"
+                           asp-route-transactionId="@item.Id"
+                           asp-route-revieweeId="@item.Offer?.Textbook?.UserId"
+                           class="btn btn-primary btn-sm">
+                            Leave Review
+                        </a>
+                    }
+                </td>
+
+            </tr>
+        }
     </tbody>
 </table>

@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ForSomaBookStore.Models.Textbook>
+
+@{
+    ViewData["Title"] = "My Listings";
+}
+
+<h2>My Listings</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        You have not posted any textbooks yet.
+    </div>
+
+    <a asp-action="Create" class="btn btn-primary">
+        Post Your First Textbook
+    </a>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Price</th>
+                <th>Condition</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>R @book.Price</td>
+                <td>@book.Condition</td>
+                <td>
+                    @(book.IsAvailable ? "Available" : "Sold")
+                </td>
+                <td>
+                    <a asp-action="Edit"
+                       asp-route-id="@book.Id"
+                       class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@book.Id"
+                       class="btn btn-sm btn-danger">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

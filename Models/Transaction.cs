@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Transactions;
 
 namespace ForSomaBookStore.Models;
 
@@ -10,7 +9,7 @@ public class Transaction
     [Display(Name = "Offer ID")]
     public int OfferId { get; set; }
 
-    public Offer? Offer { get; set; }
+    public Offer Offer { get; set; } = null!;
 
     public TransactionStatus Status { get; set; }
 
@@ -31,4 +30,15 @@ public class Transaction
     public DateTime TransactionDate { get; set; }
 
     public bool Completed { get; set; }
+
+    // Payment Gateway Fields
+
+    [Display(Name = "Payment Completed")]
+    public bool Paid { get; set; }
+
+    [Display(Name = "Payment Date")]
+    public DateTime? PaymentDate { get; set; }
+
+    [Display(Name = "Payment Reference")]
+    public string? PaymentReference { get; set; }
 }

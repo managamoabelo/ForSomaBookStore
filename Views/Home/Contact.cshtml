@@ -1,0 +1,102 @@
+﻿@model ForSomaBookStore.Models.ContactMessage
+
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <p class="lead">
+        Have a question, suggestion, or problem?
+        Send us a message and we'll get back to you.
+    </p>
+
+    <hr />
+
+    <!-- Contact Form -->
+    <form asp-action="Contact" method="post">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Subject" class="form-label"></label>
+            <input asp-for="Subject" class="form-control" />
+            <span asp-validation-for="Subject" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Message" class="form-label"></label>
+            <textarea asp-for="Message" rows="6" class="form-control"></textarea>
+            <span asp-validation-for="Message" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Send Message
+        </button>
+    </form>
+
+    <hr />
+
+    <!-- Static Contact Info -->
+    <p class="lead">
+        We'd love to hear from you. If you have any questions, suggestions, concerns, or need assistance using ForSoma Book Store, please contact us using the information below.
+    </p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>General Enquiries</h3>
+            <p>
+                <strong>Email:</strong><br />
+                support@forsoma.co.za
+            </p>
+            <p>
+                <strong>Response Time:</strong><br />
+                Within 24 - 48 hours
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h3>Support Topics</h3>
+            <ul>
+                <li>Account issues</li>
+                <li>Textbook listings</li>
+                <li>Offers and transactions</li>
+                <li>Reporting suspicious activity</li>
+                <li>General feedback and suggestions</li>
+            </ul>
+        </div>
+    </div>
+
+    <hr />
+
+    <h3>Campus Trading Safety</h3>
+    <p>
+        If you experience problems with another user or believe a listing violates platform rules, please report it immediately through the platform or contact support.
+    </p>
+
+    <div class="alert alert-info">
+        <strong>ForSoma Book Store</strong> is committed to providing a safe, secure, and student-friendly marketplace for buying and selling textbooks.
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -8,13 +8,14 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 // DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Identity (FIXED - IMPORTANT)
+// Identity
 builder.Services
     .AddDefaultIdentity<ApplicationUser>(options =>
     {
@@ -31,16 +32,15 @@ var app = builder.Build();
 // Role seeding
 using (var scope = app.Services.CreateScope())
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider
+        .GetRequiredService<UserManager<ApplicationUser>>();
 
-    string[] roles = { "Admin", "Student" };
+    var admin = await userManager.FindByEmailAsync("managamoabelo2@gmail.com");
 
-    foreach (var role in roles)
+    if (admin != null &&
+        !await userManager.IsInRoleAsync(admin, "Admin"))
     {
-        if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
-        {
-            roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
-        }
+        await userManager.AddToRoleAsync(admin, "Admin");
     }
 }
 

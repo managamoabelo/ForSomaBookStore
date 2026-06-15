@@ -18,16 +18,10 @@ using ForSomaBookStore.Models;
 
 namespace ForSomaBookStore.Areas.Identity.Pages.Account;
 
-public class LoginModel : PageModel
+public class LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger) : PageModel
 {
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly ILogger<LoginModel> _logger;
-
-    public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
-    {
-        _signInManager = signInManager;
-        _logger = logger;
-    }
+    private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+    private readonly ILogger<LoginModel> _logger = logger;
 
     /// <summary>
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -97,7 +91,7 @@ public class LoginModel : PageModel
         // Clear the existing external cookie to ensure a clean login process
         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-        ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        ExternalLogins = [.. (await _signInManager.GetExternalAuthenticationSchemesAsync())];
 
         ReturnUrl = returnUrl;
     }
@@ -106,13 +100,14 @@ public class LoginModel : PageModel
     {
         returnUrl ??= Url.Content("~/");
 
-        ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        ExternalLogins = [.. (await _signInManager.GetExternalAuthenticationSchemesAsync())];
 
         if (ModelState.IsValid)
         {
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in.");
@@ -120,7 +115,7 @@ public class LoginModel : PageModel
             }
             if (result.RequiresTwoFactor)
             {
-                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
             }
             if (result.IsLockedOut)
             {

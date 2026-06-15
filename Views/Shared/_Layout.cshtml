@@ -1,8 +1,23 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using ForSomaBookStore.Models
+@using ForSomaBookStore.Data
+@using System.Security.Claims
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+
+@{
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    int notificationCount = 0;
+
+    if (!string.IsNullOrEmpty(userId))
+    {
+        notificationCount = DbContext.Notifications
+            .Count(n => n.UserId == userId && !n.IsRead);
+    }
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,220 +29,366 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
-    <style>
-        :root {
-            --forsoma-blue: #1D4ED8;
-            --forsoma-green: #16A34A;
-            --forsoma-orange: #F97316;
-        }
-
-        body {
-            background-color: #f8fafc;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            color: white !important;
-        }
-
-        .navbar {
-            background: linear-gradient(90deg, var(--forsoma-blue), var(--forsoma-green));
-        }
-
-        .btn-forsoma {
-            background-color: var(--forsoma-orange);
-            color: white;
-        }
-
-        .btn-forsoma:hover {
-            background-color: #ea580c;
-            color: white;
-        }
-
-        .footer {
-            margin-top: auto;
-            background-color: #0f172a;
-            color: white;
-            padding: 20px;
-        }
-
-        .search-box {
-            width: 350px;
-        }
-
-        .nav-link {
-            font-weight: 500;
-        }
-
-        .profile-badge {
-            background-color: var(--forsoma-orange);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-        }
-    </style>
 </head>
 
 <body>
+
     <header>
+
         <nav class="navbar navbar-expand-lg navbar-dark shadow">
             <div class="container">
-                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+
+                <a class="navbar-brand"
+                   asp-controller="Home"
+                   asp-action="Index">
                     <i class="fa-solid fa-book"></i>
                     For Soma Book Store
                 </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarContent">
+
                     <ul class="navbar-nav me-auto">
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Index">
+                                Home
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Textbooks" asp-action="Index">Browse Books</a>
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Privacy">
+                                Privacy
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="WantedAds" asp-action="Index">Wanted Ads</a>
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Contact">
+                                Contact Us
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Offers" asp-action="Index">Offers</a>
+                            <a class="nav-link"
+                               asp-controller="Textbooks"
+                               asp-action="Index">
+                                Textbooks
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Reviews" asp-action="Index">Reviews</a>
+                            <a class="nav-link"
+                               asp-controller="WantedAds"
+                               asp-action="Index">
+                                Wanted Ads
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Transactions" asp-action="Index">Transactions</a>
+                            <a class="nav-link"
+                               asp-controller="Offers"
+                               asp-action="Index">
+                                Offers
+                            </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Reviews"
+                               asp-action="Index">
+                                Reviews
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Transactions"
+                               asp-action="Index">
+                                Transactions
+                            </a>
+                        </li>
+
                     </ul>
-
-                    <form asp-controller="Textbooks" asp-action="Index" method="get" class="d-flex me-3">
-                        <input type="text" name="searchString" class="form-control search-box" placeholder="Search textbooks, authors, ISBN..." />
-                        <button type="submit" class="btn btn-light ms-2">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </form>
 
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <div class="dropdown me-3">
-                            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">Quick Actions</button>
+                            <button class="btn btn-light dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown">
+                                Quick Actions
+                            </button>
+
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" asp-controller="Textbooks" asp-action="Create">Sell Textbook</a>
+                                    <a class="dropdown-item"
+                                       asp-controller="Textbooks"
+                                       asp-action="Create">
+                                        Sell Textbook
+                                    </a>
                                 </li>
+
                                 <li>
-                                    <a class="dropdown-item" asp-controller="WantedAds" asp-action="Create">Post Wanted Ad</a>
+                                    <a class="dropdown-item"
+                                       asp-controller="WantedAds"
+                                       asp-action="Create">
+                                        Post Wanted Ad
+                                    </a>
                                 </li>
                             </ul>
                         </div>
 
                         <ul class="navbar-nav">
+
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">@User.Identity?.Name</a>
+
+                                <a class="nav-link dropdown-toggle"
+                                   href="#"
+                                   role="button"
+                                   data-bs-toggle="dropdown">
+
+                                    @User.Identity?.Name
+                                </a>
+
                                 <ul class="dropdown-menu dropdown-menu-end">
+
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Profile" asp-action="Index">My Profile</a>
+                                        <a class="dropdown-item"
+                                           asp-controller="Profiles"
+                                           asp-action="Index">
+                                            My Profile
+                                        </a>
                                     </li>
+
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Textbooks" asp-action="MyListings">My Listings</a>
+                                        <a class="dropdown-item"
+                                           asp-controller="Textbooks"
+                                           asp-action="MyListings">
+                                            My Listings
+                                        </a>
                                     </li>
+
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Offers" asp-action="Index">My Offers</a>
+                                        <a class="dropdown-item"
+                                           asp-controller="Offers"
+                                           asp-action="Index">
+                                            My Offers
+                                        </a>
                                     </li>
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="Notifications"
+                                           asp-action="Index">
+
+                                            Notifications
+
+                                            @if (notificationCount > 0)
+                                            {
+                                                <span class="badge bg-danger">
+                                                    @notificationCount
+                                                </span>
+                                            }
+                                        </a>
+                                    </li>
+
                                 </ul>
+
                             </li>
 
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Admin" asp-action="Index">
+                                    <a class="nav-link"
+                                       asp-controller="Admin"
+                                       asp-action="Index">
+
                                         <i class="fa-solid fa-user-shield"></i>
-                                        Admin
+                                        Admin Dashboard
                                     </a>
                                 </li>
                             }
 
                             <li class="nav-item">
-                                <form method="post" action="/Identity/Account/Logout">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-outline-light ms-2">Logout</button>
+
+                                <form asp-area="Identity"
+                                      asp-page="/Account/Logout"
+                                      asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+
+                                    <button type="submit"
+                                            class="nav-link btn btn-link text-light">
+                                        Logout
+                                    </button>
+
                                 </form>
+
                             </li>
+
                         </ul>
                     }
                     else
                     {
                         <ul class="navbar-nav">
+
                             <li class="nav-item">
-                                <a class="nav-link" href="/Identity/Account/Login">Login</a>
+                                <a class="nav-link"
+                                   asp-area="Identity"
+                                   asp-page="/Account/Login">
+                                    Login
+                                </a>
                             </li>
+
                             <li class="nav-item">
-                                <a class="btn btn-forsoma ms-2" href="/Identity/Account/Register">Register</a>
+                                <a class="btn btn-forsoma ms-2"
+                                   asp-area="Identity"
+                                   asp-page="/Account/Register">
+                                    Register
+                                </a>
                             </li>
+
                         </ul>
                     }
+
                 </div>
             </div>
         </nav>
+
+        <br />
+
+        <form asp-controller="Textbooks" asp-action="Index" method="get" class="d-flex me-3">
+
+            <input type="text" name="searchString" class="form-control search-box" placeholder="Search textbooks" />
+
+            <button type="submit" class="btn btn-light ms-2"> <i class="fa fa-search"></i> </button>
+
+        </form>
+
     </header>
 
-    <div class="container mt-4">
-        <main role="main">
+    <main>
+        <div class="container mt-4">
             @RenderBody()
-        </main>
-    </div>
+        </div>
+    </main>
 
-    <footer class="footer mt-5">
+    <footer class="footer">
         <div class="container">
+
             <div class="row">
+
                 <div class="col-md-4">
+
                     <h5>
                         <i class="fa-solid fa-book"></i>
                         For Soma Book Store
-                        <small class="d-block fs-6">South African Student Marketplace</small>
+
+                        <small class="d-block fs-6">
+                            South African Student Marketplace
+                        </small>
                     </h5>
-                    <p>Buy, Sell and Exchange textbooks safely with fellow students.</p>
+
+                    <p>
+                        Buy, Sell and Exchange textbooks safely with fellow students.
+                    </p>
+
                 </div>
 
                 <div class="col-md-4">
+
                     <h5>Quick Links</h5>
+
                     <ul class="list-unstyled">
-                        <li><a asp-controller="Textbooks" asp-action="Index" class="text-white">Browse Books</a></li>
-                        <li><a asp-controller="WantedAds" asp-action="Index" class="text-white">Wanted Ads</a></li>
-                        <li><a asp-controller="Offers" asp-action="Index" class="text-white">Offers</a></li>
-                        <li><a asp-controller="Reviews" asp-action="Index" class="text-white">Reviews</a></li>
+
+                        <li>
+                            <a asp-controller="Home"
+                               asp-action="Privacy"
+                               class="text-white">
+                                Privacy Policy
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Contact">
+                                Contact Us
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Textbooks"
+                               asp-action="Index"
+                               class="text-white">
+                                Browse Books
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="WantedAds"
+                               asp-action="Index"
+                               class="text-white">
+                                Wanted Ads
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Offers"
+                               asp-action="Index"
+                               class="text-white">
+                                Offers
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Reviews"
+                               asp-action="Index"
+                               class="text-white">
+                                Reviews
+                            </a>
+                        </li>
+
                     </ul>
+
                 </div>
 
                 <div class="col-md-4">
+
                     <h5>Safe Campus Trading</h5>
+
                     <p>Recommended meetup locations:</p>
+
                     <ul>
                         <li>Campus Library</li>
                         <li>Student Centre</li>
                         <li>Campus Reception</li>
                     </ul>
+
                 </div>
+
             </div>
 
             <hr />
 
             <div class="text-center">
-                © @DateTime.Now.Year For Soma Book Store | ASP.NET Core MVC | Built for Students
+                © @DateTime.Now.Year For Soma Book Store |
+                ASP.NET Core MVC |
+                Built for Students
             </div>
+
         </div>
     </footer>
 

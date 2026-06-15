@@ -79,6 +79,10 @@ public class RegisterModel : PageModel
         public string LastName { get; set; } = string.Empty;
 
         [Required]
+        [Display(Name = "Student Number")]
+        public string StudentNumber { get; set; } = string.Empty;
+
+        [Required]
         [Display(Name = "Campus")]
         public string Campus { get; set; } = string.Empty;
 
@@ -129,6 +133,7 @@ public class RegisterModel : PageModel
             // Your custom fields
             user.FirstName = Input.FirstName;
             user.LastName = Input.LastName;
+            user.StudentNumber = Input.StudentNumber;
             user.Campus = Input.Campus;
             user.TrustScore = 0;
 
@@ -137,35 +142,10 @@ public class RegisterModel : PageModel
 
             var result = await _userManager.CreateAsync(user, Input.Password);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                _logger.LogInformation("User created a new account with password.");
-
-                var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmail",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId, code, returnUrl },
-                    protocol: Request.Scheme)!;
-
-                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                {
-                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
-                }
-                else
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-                }
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
+                var errors = string.Join("\n", result.Errors.Select(e => e.Description));
+                throw new Exception(errors);
             }
         }
 

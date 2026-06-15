@@ -18,10 +18,27 @@
         <a asp-controller="Textbooks"
            asp-action="Index"
            class="btn btn-primary btn-lg">
-
             Browse Books
-
         </a>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col">
+            <h2>@ViewBag.Users</h2>
+            <p>Students</p>
+        </div>
+
+        <div class="col">
+            <h2>@ViewBag.Textbooks</h2>
+            <p>Books</p>
+        </div>
+
+        <div class="col">
+            <h2>@ViewBag.Transactions</h2>
+            <p>Transactions</p>
+        </div>
 
     </div>
 </div>
@@ -66,3 +83,13 @@
         </div>
     }
 </div>
+
+@foreach (var book in ViewBag.FeaturedBooks)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5>@book.Title</h5>
+            <p>R @book.Price</p>
+        </div>
+    </div>
+}

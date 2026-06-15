@@ -22,10 +22,7 @@
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TextbookId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Textbook)
+                Textbook
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.BuyerId)
@@ -33,7 +30,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Buyer)
             </th>
-            <th></th>
+            <th>
+                Actions
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -46,13 +45,21 @@
                 @Html.DisplayFor(model => item.OfferDate)
             </td>
             <td>
-                @Html.DisplayFor(model => item.Status)
+                @if (item.Status == Offer.OfferStatus.Accepted)
+                {
+                    <span class="badge bg-success">Accepted</span>
+                }
+                else if (item.Status == Offer.OfferStatus.Rejected)
+                {
+                    <span class="badge bg-danger">Rejected</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark">Pending</span>
+                }
             </td>
             <td>
-                @Html.DisplayFor(model => item.TextbookId)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Textbook)
+                @(item.Textbook?.Title ?? "Unknown Book")
             </td>
             <td>
                 @Html.DisplayFor(model => item.BuyerId)
@@ -61,9 +68,14 @@
                 @Html.DisplayFor(model => item.Buyer)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @if(item.Status == Offer.OfferStatus.Pending)
+                {
+                    <form asp-action="Accept" asp-route-id="@item.Id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-success btn-sm"> Accept </button>
+                    </form>
+
+                    <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-danger btn-sm"> Reject </a>
+                }
             </td>
         </tr>
 }

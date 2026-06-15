@@ -1,0 +1,170 @@
+﻿@model ForSomaBookStore.Models.Profile
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h2>My Profile</h2>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h3>@Model.FullName</h3>
+
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>Institution:</strong> @Model.Institution</p>
+            <p><strong>Student Number:</strong> @Model.StudentNumber</p>
+
+            <p>
+                <strong>Trust Score:</strong>
+                <span class="badge bg-success">
+                    @Model.TrustScore
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    Books Listed
+                    <h3>@Model.BooksListed</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <h3>Marketplace Activity</h3>
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5>Books Listed</h5>
+                    <h2>@Model.BooksListed</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5>Offers Made</h5>
+                    <h2>@Model.OffersMade</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5>Transactions</h5>
+                    <h2>@Model.TransactionsCompleted</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <h5>Reviews</h5>
+                    <h2>@Model.ReviewsReceived</h2>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h3>My Recent Listings</h3>
+
+        @if (Model.RecentListings.Any())
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var book in Model.RecentListings)
+                    {
+                        <tr>
+                            <td>@book.Title</td>
+
+                            <td>
+                                R @book.Price.ToString("N2")
+                            </td>
+
+                            <td>
+                                @if (book.IsAvailable)
+                                {
+                                    <span class="badge bg-success">
+                                        Available
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        Sold
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                You have not listed any textbooks yet.
+            </div>
+        }
+    </div>
+
+    <hr />
+
+    <h3>Recent Reviews Received</h3>
+
+    @if (Model.RecentReviews.Any())
+    {
+        @foreach (var review in Model.RecentReviews)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+
+                    <strong>
+                        @(review.Reviewer?.FirstName ?? "Anonymous")
+                    </strong>
+
+                    <br />
+
+                    @for (int i = 0; i < review.Rating; i++)
+                    {
+                        <span>*</span>
+                    }
+
+                    <p class="mt-2">
+                        @review.Comment
+                    </p>
+
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No reviews received yet.
+        </div>
+    }
+</div>

@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ForSomaBookStore.Models.ContactMessage>
+
+@{
+    ViewData["Title"] = "Contact Messages";
+}
+
+<h1>Contact Messages</h1>
+
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.Name</td>
+
+                <td>@item.Email</td>
+
+                <td>@item.Subject</td>
+
+                <td>@item.DateSubmitted</td>
+
+                <td>
+                    @(item.Resolved ? "Resolved" : "Open")
+                </td>
+
+                <td>
+
+                    <a asp-action="ResolveMessage"
+                       asp-route-id="@item.Id"
+                       class="btn btn-success btn-sm">
+                        Resolve
+                    </a>
+
+                    <a asp-action="DeleteMessage"
+                       asp-route-id="@item.Id"
+                       class="btn btn-danger btn-sm">
+                        Delete
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

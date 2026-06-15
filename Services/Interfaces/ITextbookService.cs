@@ -13,5 +13,7 @@ namespace ForSomaBookStore.Services.Interfaces
         Task UpdateAsync(Textbook textbook);
 
         Task DeleteAsync(int id);
+
+        Task<List<Textbook>> GetByUserIdAsync(string userId);
     }
 }

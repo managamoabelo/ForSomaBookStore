@@ -26,8 +26,6 @@ public class ApplicationUser : IdentityUser
 
     [Display(Name = "Preferred Language")]
     public string? PreferredLanguage { get; set; } = "English";
-    
-    public string? Bio { get; set; }
 
     public ICollection<Textbook> Textbooks { get; set; }
     = [];

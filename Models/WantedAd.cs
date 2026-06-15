@@ -12,8 +12,7 @@ namespace ForSomaBookStore.Models
         public string? Description { get; set; }
 
         [Display(Name = "Date Posted")]
-        public DateTime DatePosted { get; set; }
-            = DateTime.UtcNow;
+        public DateTime DatePosted { get; set; } = DateTime.UtcNow;
 
         [Display(Name = "User ID")]
         public string? UserId { get; set; }

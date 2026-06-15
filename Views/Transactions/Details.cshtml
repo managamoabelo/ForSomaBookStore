@@ -1,66 +1,131 @@
 @model ForSomaBookStore.Models.Transaction
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Transaction Details";
 }
 
-<h1>Details</h1>
+<h1>Transaction Details</h1>
+
+@if (Model.Paid)
+{
+    <div class="alert alert-success shadow-sm">
+
+        <h4>
+            ✓ Payment Successful
+        </h4>
+
+        <hr />
+
+        <p>
+            <strong>Payment Reference:</strong>
+            @Model.PaymentReference
+        </p>
+
+        <p>
+            <strong>Payment Date:</strong>
+            @(Model.PaymentDate?.ToString("dd MMM yyyy HH:mm"))
+        </p>
+
+    </div>
+}
+
+<div class="card shadow">
+
+    <div class="card-body">
+
+        <dl class="row">
+
+            <dt class="col-sm-3">
+                Offer ID
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.OfferId
+            </dd>
+
+            <dt class="col-sm-3">
+                Status
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.Status
+            </dd>
+
+            <dt class="col-sm-3">
+                Meetup Location
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.MeetupLocation
+            </dd>
+
+            <dt class="col-sm-3">
+                Payment Method
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.PaymentMethod
+            </dd>
+
+            <dt class="col-sm-3">
+                Payment Status
+            </dt>
+
+            <dd class="col-sm-9">
+
+                @if (Model.Paid)
+                {
+                    <span class="badge bg-success">
+                        Paid
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark">
+                        Not Paid
+                    </span>
+                }
+
+            </dd>
+
+            <dt class="col-sm-3">
+                Transaction Date
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.TransactionDate.ToString("dd MMM yyyy")
+            </dd>
+
+            <dt class="col-sm-3">
+                Completed
+            </dt>
+
+            <dd class="col-sm-9">
+                @(Model.Completed ? "Yes" : "No")
+            </dd>
+
+        </dl>
+
+    </div>
+
+</div>
+
+<br />
 
 <div>
-    <h4>Transaction</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.OfferId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OfferId)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Offer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Offer)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MeetupLocation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MeetupLocation)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PaymentMethod)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PaymentMethod)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TransactionDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TransactionDate)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Completed)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Completed)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    @if (!Model.Paid)
+    {
+        <a asp-action="Pay"
+           asp-route-id="@Model.Id"
+           class="btn btn-success">
+            Proceed To Payment
+        </a>
+    }
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Back
+    </a>
+
 </div>

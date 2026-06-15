@@ -5,7 +5,6 @@
 }
 
 <h1>Browse Books</h1>
-
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -48,12 +47,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.UserId)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Offers)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -85,7 +78,9 @@
                 @Html.DisplayFor(model => item.Campus)
             </td>
             <td>
-                @Html.DisplayFor(model => item.ImageUrl)
+                <img src="@item.ImageUrl"
+                     class="img-fluid"
+                     style="height:200px;width:150px;object-fit:cover;" />
             </td>
             <td>
                 @Html.DisplayFor(model => item.IsAvailable)
@@ -97,15 +92,14 @@
                 @Html.DisplayFor(model => item.UserId)
             </td>
             <td>
-                @Html.DisplayFor(model => item.User)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Offers)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                <a asp-controller="Offers" asp-action="Create" asp-route-textbookId="@item.Id" class="btn btn-success btn-sm"> Make Offer</a> |
+
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                <a asp-controller="Offers" asp-action="Create" asp-route-textbookId="@item.Id" class="btn btn-success btn-sm"> Make Offer</a> |
+                
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-controller="Offers" asp-action="Create" asp-route-textbookId="@item.Id" class="btn btn-success btn-sm"> Make Offer</a> |
             </td>
         </tr>
 }

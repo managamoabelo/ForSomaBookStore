@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ForSomaBookStore.Models.Migrations
+namespace ForSomaBookStore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260605194938_AddProfileFields")]
-    partial class AddProfileFields
+    [Migration("20260615114727_AddPaymentFields")]
+    partial class AddPaymentFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,9 +32,6 @@ namespace ForSomaBookStore.Models.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Campus")
                         .HasColumnType("nvarchar(max)");
@@ -93,6 +90,7 @@ namespace ForSomaBookStore.Models.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TrustScore")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -115,6 +113,76 @@ namespace ForSomaBookStore.Models.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ForSomaBookStore.Models.ContactMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateSubmitted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("Resolved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContactMessages");
+                });
+
+            modelBuilder.Entity("ForSomaBookStore.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("ForSomaBookStore.Models.Offer", b =>
                 {
                     b.Property<int>("Id")
@@ -123,10 +191,15 @@ namespace ForSomaBookStore.Models.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("BuyerId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("OfferAmount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("OfferDate")
@@ -139,6 +212,8 @@ namespace ForSomaBookStore.Models.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("BuyerId");
 
@@ -163,15 +238,19 @@ namespace ForSomaBookStore.Models.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RevieweeId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ReviewerId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TransactionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RevieweeId");
+
+                    b.HasIndex("ReviewerId");
 
                     b.HasIndex("TransactionId");
 
@@ -215,7 +294,17 @@ namespace ForSomaBookStore.Models.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ReportReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("ReportReviewed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Reported")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -223,6 +312,7 @@ namespace ForSomaBookStore.Models.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -253,7 +343,16 @@ namespace ForSomaBookStore.Models.Migrations
                     b.Property<int>("OfferId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Paid")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("PaymentDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PaymentMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentReference")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
@@ -434,11 +533,28 @@ namespace ForSomaBookStore.Models.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ForSomaBookStore.Models.Notification", b =>
+                {
+                    b.HasOne("ForSomaBookStore.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ForSomaBookStore.Models.Offer", b =>
                 {
-                    b.HasOne("ForSomaBookStore.Models.ApplicationUser", "Buyer")
+                    b.HasOne("ForSomaBookStore.Models.ApplicationUser", null)
                         .WithMany("Offers")
-                        .HasForeignKey("BuyerId");
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("ForSomaBookStore.Models.ApplicationUser", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("ForSomaBookStore.Models.Textbook", "Textbook")
                         .WithMany("Offers")
@@ -453,11 +569,25 @@ namespace ForSomaBookStore.Models.Migrations
 
             modelBuilder.Entity("ForSomaBookStore.Models.Review", b =>
                 {
+                    b.HasOne("ForSomaBookStore.Models.ApplicationUser", "Reviewee")
+                        .WithMany()
+                        .HasForeignKey("RevieweeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ForSomaBookStore.Models.ApplicationUser", "Reviewer")
+                        .WithMany()
+                        .HasForeignKey("ReviewerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("ForSomaBookStore.Models.Transaction", "Transaction")
                         .WithMany()
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Reviewee");
+
+                    b.Navigation("Reviewer");
 
                     b.Navigation("Transaction");
                 });
@@ -466,7 +596,9 @@ namespace ForSomaBookStore.Models.Migrations
                 {
                     b.HasOne("ForSomaBookStore.Models.ApplicationUser", "User")
                         .WithMany("Textbooks")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

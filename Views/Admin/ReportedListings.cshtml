@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ForSomaBookStore.Models.Textbook>
+
+<h2>Reported Listings</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Owner</th>
+            <th>Reason</th>
+            <th>Reviewed</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.User?.Email</td>
+                <td>@item.ReportReason</td>
+                <td>@item.ReportReviewed</td>
+
+                <td>
+                    <a asp-action="ReviewReport"
+                       asp-route-id="@item.Id"
+                       class="btn btn-warning btn-sm">
+                        Mark Reviewed
+                    </a>
+
+                    <a asp-action="RemoveListing"
+                       asp-route-id="@item.Id"
+                       class="btn btn-danger btn-sm">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

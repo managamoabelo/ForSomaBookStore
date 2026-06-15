@@ -11,7 +11,9 @@ public class TextbookService(ApplicationDbContext context) : ITextbookService
 
     public async Task<List<Textbook>> GetAllAsync()
     {
-        return await _context.Textbooks.ToListAsync();
+        return await _context.Textbooks
+            .Include(t => t.User)
+            .ToListAsync();
     }
 
     public async Task<Textbook> GetByIdAsync(int id)
@@ -22,8 +24,17 @@ public class TextbookService(ApplicationDbContext context) : ITextbookService
 
     public async Task CreateAsync(Textbook textbook)
     {
-        _context.Textbooks.Add(textbook);
-        await _context.SaveChangesAsync(); //ERROR 
+        try
+        {
+            _context.Textbooks.Add(textbook);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(
+                ex.InnerException?.Message ??
+                ex.Message);
+        }
     }
 
     public async Task UpdateAsync(Textbook textbook)
@@ -41,5 +52,12 @@ public class TextbookService(ApplicationDbContext context) : ITextbookService
             _context.Textbooks.Remove(book);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<List<Textbook>> GetByUserIdAsync(string userId)
+    {
+        return await _context.Textbooks
+            .Where(t => t.UserId == userId)
+            .ToListAsync();
     }
 }

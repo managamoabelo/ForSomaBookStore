@@ -1,0 +1,201 @@
+﻿@model ForSomaBookStore.Models.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1 class="mb-4">Admin Dashboard</h1>
+
+<div class="row">
+
+    <div class="col-md-3 mb-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Reported Listings</h6>
+                <h2>@Model.ReportedListingsCount</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2 mb-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Total Users</h6>
+                <h2>@Model.UserCount</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2 mb-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Textbooks</h6>
+                <h2>@Model.TextbookCount</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2 mb-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Offers</h6>
+                <h2>@Model.OfferCount</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Transactions</h6>
+                <h2>@Model.TransactionCount</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Reviews</h6>
+                <h2>@Model.ReviewCount</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+<h3 class="mb-3">Administration Tools</h3>
+
+<div class="row mb-4">
+
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+
+                <h4>Contact Messages</h4>
+
+                <p>
+                    Review and manage messages submitted through the Contact Us page.
+                </p>
+
+                <a asp-action="ContactMessages"
+                   class="btn btn-primary">
+                    View Messages
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+
+                <h4>Reported Listings</h4>
+
+                <p>
+                    Review listings reported by users and take moderation actions.
+                </p>
+
+                <a asp-action="ReportedListings"
+                   class="btn btn-danger">
+                    View Reports
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+<h3>Registered Users</h3>
+
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Campus</th>
+            <th>Trust Score</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FirstName @user.LastName</td>
+                <td>@user.Campus</td>
+                <td>@user.TrustScore</td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<hr />
+
+<h3>Textbook Listings</h3>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Seller</th>
+            <th>Price</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var book in Model.Textbooks)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.User?.Email</td>
+                <td>R @book.Price.ToString("N2")</td>
+                <td>@(book.IsAvailable ? "Available" : "Sold")</td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<hr />
+
+<h3>Reviews</h3>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Rating</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var review in Model.Reviews)
+        {
+            <tr>
+                <td>@review.Rating</td>
+                <td>@review.Comment</td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+

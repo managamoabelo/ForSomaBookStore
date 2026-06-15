@@ -1,0 +1,30 @@
+﻿@model ForSomaBookStore.Models.Review
+
+<h2>Leave Review</h2>
+
+<form asp-action="Create" method="post">
+
+    <input type="hidden" asp-for="TransactionId" />
+    <input type="hidden" asp-for="RevieweeId" />
+
+    <div class="mb-3">
+        <label asp-for="Rating" class="form-label"></label>
+        <select asp-for="Rating" class="form-control">
+            <option value="1">1 Star</option>
+            <option value="2">2 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="5">5 Stars</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Comment" class="form-label"></label>
+        <textarea asp-for="Comment" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        Submit Review
+    </button>
+
+</form>

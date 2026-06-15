@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ForSomaBookStore.Models;
 
 namespace ForSomaBookStore.Models
 {
@@ -15,7 +16,28 @@ namespace ForSomaBookStore.Models
         [Display(Name = "Student Number")]
         public string? StudentNumber { get; set; }
 
+        [Display(Name = "Trust Score")]
+        public int TrustScore { get; set; }
+
         public string? Bio { get; set; }
+
+        [Display(Name = "Books Listed")]
+        public int BooksListed { get; set; }
+
+        [Display(Name = "Offers Made")]
+        public int OffersMade { get; set; }
+
+        [Display(Name = "Transactions Completed")]
+        public int TransactionsCompleted { get; set; }
+
+        [Display(Name = "Reviews Received")]
+        public int ReviewsReceived { get; set; }
+
+        [Display(Name = "Recent Listings")]
+        public List<Textbook> RecentListings { get; set; } = new();
+
+        [Display(Name = "Recent Reviews")]
+        public List<Review> RecentReviews { get; set; } = new();
 
         public IEnumerable<Textbook>? Textbooks { get; set; }
         public IEnumerable<WantedAd>? WantedAds { get; set; }
