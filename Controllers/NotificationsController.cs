@@ -1,4 +1,5 @@
 ﻿using ForSomaBookStore.Data;
+using ForSomaBookStore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,10 @@ namespace ForSomaBookStore.Controllers
     [Authorize]
     public class NotificationsController(
         ApplicationDbContext context,
-        UserManager<IdentityUser> userManager) : Controller
+        UserManager<ApplicationUser> userManager) : Controller
     {
         private readonly ApplicationDbContext _context = context;
-        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
 
         public async Task<IActionResult> Index()
         {
@@ -28,8 +29,7 @@ namespace ForSomaBookStore.Controllers
 
         public async Task<IActionResult> MarkAsRead(int id)
         {
-            var notification =
-                await _context.Notifications.FindAsync(id);
+            var notification = await _context.Notifications.FindAsync(id);
 
             if (notification != null)
             {
